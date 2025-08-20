@@ -72,17 +72,12 @@ exports.addProducts = async (req, res) => {
 // get all products
 exports.getAllProducts = async(req,res)=>{
     try {
-
-const prod = await fetch('https://dummyjson.com/products')
-.then(res => res.json())
-.then(data => data.products);
-   return res.status(200).json({message:"product found",prod})
-
-        // const products = await Product.find({productStatus:0})
+        
+        const products = await Product.find()
         // if(!products){
         //     return res.status(400).json({error:"product not found"})
         // }
-        // return res.status(200).json({message:"product found",products})
+        return res.status(200).json({message:"product found",products})
     } catch (error) {
           ErrorHandler(error,res);
     }
