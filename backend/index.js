@@ -91,7 +91,7 @@ const addToCart = require("./Routers/addToCartRouter");
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/addtocart", addToCart);
-app.use("/api/v1/orderproduct", orderProduct);
+// app.use("/api/v1/orderproduct", orderProduct);
 
 // Error Handling for Multer
 app.use((err, req, res, next) => {
