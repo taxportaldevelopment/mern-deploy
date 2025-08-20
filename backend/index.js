@@ -91,6 +91,9 @@ const addToCart = require("./Routers/addToCartRouter");
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/addtocart", addToCart);
+app.get("/api/v1/upload-image", (req, res) => {
+ return res.send("Upload image endpoint");
+});
 // app.use("/api/v1/orderproduct", orderProduct);
 
 // Error Handling for Multer
