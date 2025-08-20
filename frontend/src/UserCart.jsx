@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import LoadingSpenner from "./commen/LoadingSpenner";
 import axios from "axios";
-import Razorpay from "razorpay";
+// import Razorpay from "razorpay";
 
 // Define the reducer function
 const reducer = (state, action) => {
@@ -210,141 +210,141 @@ const UserCart = ({ productId, price }) => {
     }
   });
 
-const checkoutHandler = async (amount) => {
-  try {
-    // Validate amount
-    if (!amount || isNaN(amount)) {
-      throw new Error("Invalid payment amount");
-    }
+// const checkoutHandler = async (amount) => {
+//   try {
+//     // Validate amount
+//     if (!amount || isNaN(amount)) {
+//       throw new Error("Invalid payment amount");
+//     }
 
-    const amountInPaise = Math.round(amount * 100);
+//     const amountInPaise = Math.round(amount * 100);
 
-    // 1. Get Razorpay LIVE key (from environment variables)
-    const { data: getKey } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/getkey`, {
-      timeout: 5000
-    });
+//     // 1. Get Razorpay LIVE key (from environment variables)
+//     const { data: getKey } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/getkey`, {
+//       timeout: 5000
+//     });
 
-    if (!getKey?.key) {
-      throw new Error("Failed to retrieve Razorpay key");
-    }
+//     if (!getKey?.key) {
+//       throw new Error("Failed to retrieve Razorpay key");
+//     }
 
-    // 2. Create Razorpay order with live credentials
-    const orderResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/payment/process`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ 
-        amount: amountInPaise,
-        currency: 'INR' // Explicitly specify currency
-      }),
-    });
+//     // 2. Create Razorpay order with live credentials
+//     const orderResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/payment/process`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       credentials: "include",
+//       body: JSON.stringify({ 
+//         amount: amountInPaise,
+//         currency: 'INR' // Explicitly specify currency
+//       }),
+//     });
 
-    if (!orderResponse.ok) {
-      const errorData = await orderResponse.json();
-      throw new Error(errorData.message || errorData.error || "Failed to create order");
-    }
+//     if (!orderResponse.ok) {
+//       const errorData = await orderResponse.json();
+//       throw new Error(errorData.message || errorData.error || "Failed to create order");
+//     }
 
-    const orderData = await orderResponse.json();
+//     const orderData = await orderResponse.json();
 
-    if (!orderData?.order?.id) {
-      throw new Error("Invalid order data received from server");
-    }
+//     if (!orderData?.order?.id) {
+//       throw new Error("Invalid order data received from server");
+//     }
 
-    const openRazorpay = () => {
-      const options = {
-        key: getKey.key, // This should now be your LIVE key
-        amount: amountInPaise.toString(),
-        currency: 'INR',
-        name: 'Aura Homes',
-        description: 'Product purchase',
-        order_id: orderData.order.id,
-        handler: async function (response) {
-          try {
-            const verificationResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/verify/payment`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                amount: amountInPaise // Include amount for additional verification
-              }),
-            });
+//     const openRazorpay = () => {
+//       const options = {
+//         key: getKey.key, // This should now be your LIVE key
+//         amount: amountInPaise.toString(),
+//         currency: 'INR',
+//         name: 'Aura Homes',
+//         description: 'Product purchase',
+//         order_id: orderData.order.id,
+//         handler: async function (response) {
+//           try {
+//             const verificationResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/verify/payment`, {
+//               method: "POST",
+//               headers: {
+//                 "Content-Type": "application/json",
+//               },
+//               credentials: "include",
+//               body: JSON.stringify({
+//                 razorpay_payment_id: response.razorpay_payment_id,
+//                 razorpay_order_id: response.razorpay_order_id,
+//                 razorpay_signature: response.razorpay_signature,
+//                 amount: amountInPaise // Include amount for additional verification
+//               }),
+//             });
 
-            if (!verificationResponse.ok) {
-              throw new Error("Payment verification failed");
-            }
+//             if (!verificationResponse.ok) {
+//               throw new Error("Payment verification failed");
+//             }
             
-            const verificationData = await verificationResponse.json();
-            console.log("Payment verification successful:", verificationData);
+//             const verificationData = await verificationResponse.json();
+//             console.log("Payment verification successful:", verificationData);
             
-            // Redirect only after successful verification
-            if (verificationData.success) {
-              navigater('/order-success');
-            } else {  
-              throw new Error("Payment verification failed on server");
-            }
-          } catch (verificationError) {
-            console.error("Payment verification error:", verificationError);
-            alert("Payment verification failed. Please contact support with your Order ID: " + orderData.order.id);
-          }
-        },
-        prefill: {
-          name: authUser?.name || 'Guest',
-          email: authUser?.email || 'aurahomeshopping@gmail.com',
-          contact: authUser?.contact || '8438221832'
-        },
-        theme: {
-          color: '#F37254'
-        },
-        method: {
-          wallet: false, // Enable wallets in live mode
-          emi: false
-        },
-        modal: {
-          ondismiss: function() {
-            console.log("Payment modal dismissed");
-            // Consider tracking abandoned payments
-          }
-        }
-      };
+//             // Redirect only after successful verification
+//             if (verificationData.success) {
+//               navigater('/order-success');
+//             } else {  
+//               throw new Error("Payment verification failed on server");
+//             }
+//           } catch (verificationError) {
+//             console.error("Payment verification error:", verificationError);
+//             alert("Payment verification failed. Please contact support with your Order ID: " + orderData.order.id);
+//           }
+//         },
+//         prefill: {
+//           name: authUser?.name || 'Guest',
+//           email: authUser?.email || 'aurahomeshopping@gmail.com',
+//           contact: authUser?.contact || '8438221832'
+//         },
+//         theme: {
+//           color: '#F37254'
+//         },
+//         method: {
+//           wallet: false, // Enable wallets in live mode
+//           emi: false
+//         },
+//         modal: {
+//           ondismiss: function() {
+//             console.log("Payment modal dismissed");
+//             // Consider tracking abandoned payments
+//           }
+//         }
+//       };
 
-      const rzp = new window.Razorpay(options);
+//       const rzp = new window.Razorpay(options);
 
-      rzp.on('payment.failed', function(response) {
-        console.error("Payment failed:", response.error);
-        alert(`Payment failed: ${response.error.description}`);
-        // Track failed payments for analytics
-      });
+//       rzp.on('payment.failed', function(response) {
+//         console.error("Payment failed:", response.error);
+//         alert(`Payment failed: ${response.error.description}`);
+//         // Track failed payments for analytics
+//       });
 
-      rzp.open();
-    };
+//       rzp.open();
+//     };
 
-    // Load Razorpay script if not loaded
-    if (!window.Razorpay) {
-      const script = document.createElement('script');
-      script.src = import.meta.env.VITE_RAZORPAY_API_KEY;
-      script.async = true;
-      script.onload = openRazorpay;
-      script.onerror = () => {
-        throw new Error("Failed to load Razorpay SDK");
-      };
-      document.body.appendChild(script);
-    } else {
-      openRazorpay();
-    }
+//     // Load Razorpay script if not loaded
+//     if (!window.Razorpay) {
+//       const script = document.createElement('script');
+//       script.src = import.meta.env.VITE_RAZORPAY_API_KEY;
+//       script.async = true;
+//       script.onload = openRazorpay;
+//       script.onerror = () => {
+//         throw new Error("Failed to load Razorpay SDK");
+//       };
+//       document.body.appendChild(script);
+//     } else {
+//       openRazorpay();
+//     }
 
-  } catch (error) {
-    console.error("Checkout error:", error);
-    alert(`Payment error: ${error.message}`);
-    // Consider implementing error tracking
-  }
-};
+//   } catch (error) {
+//     console.error("Checkout error:", error);
+//     alert(`Payment error: ${error.message}`);
+//     // Consider implementing error tracking
+//   }
+// };
 
 
   return (
