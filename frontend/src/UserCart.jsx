@@ -35,7 +35,7 @@ const UserCart = ({ productId, price }) => {
       // eslint-disable-next-line no-useless-catch
       try {
         const res = await fetch(
-          `${commenUrl}/api/v1/addtocart/car/add/${productId}`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/addtocart/car/add/${productId}`,
           {
             method: "GET",
             credentials: "include",
@@ -97,7 +97,7 @@ const UserCart = ({ productId, price }) => {
         const person = { action: pre };
 
         const res = await fetch(
-          `${commenUrl}/api/v1/addtocart/car/add/quantity/${productId}`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/addtocart/car/add/quantity/${productId}`,
           {
             method: "PUT",
             credentials: "include",
@@ -142,7 +142,7 @@ const UserCart = ({ productId, price }) => {
       // eslint-disable-next-line no-useless-catch
       try {
         const res = await fetch(
-          `${commenUrl}/api/v1/addtocart/car/add/${productId}`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/addtocart/car/add/${productId}`,
           {
             method: "POST",
             credentials: "include",
@@ -186,7 +186,7 @@ const UserCart = ({ productId, price }) => {
       // eslint-disable-next-line no-useless-catch
       try {
         const res = await fetch(
-          `${commenUrl}/api/v1/addtocart/car/add/remove/${cartId}`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/addtocart/car/add/remove/${cartId}`,
           {
             method: "GET",
             credentials: "include",
@@ -220,7 +220,7 @@ const checkoutHandler = async (amount) => {
     const amountInPaise = Math.round(amount * 100);
 
     // 1. Get Razorpay LIVE key (from environment variables)
-    const { data: getKey } = await axios.get(`${commenUrl}/api/v1/orderproduct/getkey`, {
+    const { data: getKey } = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/getkey`, {
       timeout: 5000
     });
 
@@ -229,7 +229,7 @@ const checkoutHandler = async (amount) => {
     }
 
     // 2. Create Razorpay order with live credentials
-    const orderResponse = await fetch(`${commenUrl}/api/v1/orderproduct/payment/process`, {
+    const orderResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/payment/process`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -262,7 +262,7 @@ const checkoutHandler = async (amount) => {
         order_id: orderData.order.id,
         handler: async function (response) {
           try {
-            const verificationResponse = await fetch(`${commenUrl}/api/v1/orderproduct/verify/payment`, {
+            const verificationResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/orderproduct/verify/payment`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -328,7 +328,7 @@ const checkoutHandler = async (amount) => {
     // Load Razorpay script if not loaded
     if (!window.Razorpay) {
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = import.meta.env.VITE_RAZORPAY_API_KEY;
       script.async = true;
       script.onload = openRazorpay;
       script.onerror = () => {
