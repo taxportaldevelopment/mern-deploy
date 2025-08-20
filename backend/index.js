@@ -86,7 +86,7 @@ const DatabaseConnect = require("./db/batabase");
 const userRouter = require("./Routers/authRouters");
 const productRouter = require("./Routers/productRouters");
 const addToCart = require("./Routers/addToCartRouter");
-const orderProduct = require("./Routers/orderProduct");
+// const orderProduct = require("./Routers/orderProduct");
 
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/products", productRouter);
