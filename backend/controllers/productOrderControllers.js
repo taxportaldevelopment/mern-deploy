@@ -1,7 +1,7 @@
 const cancelEmail = require("../lib/utils/userCancelEmailSend");
 const productOrder = require("../modules/ordersModules");
 const Product = require("../modules/productModules");
-const { instance } = require("../server");
+const { instance } = require("..");
 const crypto = require("crypto");
 
 
