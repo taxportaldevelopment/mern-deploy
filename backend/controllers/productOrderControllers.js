@@ -5,65 +5,65 @@ const { instance } = require("..");
 const crypto = require("crypto");
 
 
-exports.processPayment = async (req, res) => {
+// exports.processPayment = async (req, res) => {
      
-   const options = {
-      amount:Number(req.body.amount), // Amount in paise
-      currency: "INR",
-      receipt: `receipt_order_${Math.random() * 10000}`,
-      payment_capture: 1 // Auto capture payment
-   };
+//    const options = {
+//       amount:Number(req.body.amount), // Amount in paise
+//       currency: "INR",
+//       receipt: `receipt_order_${Math.random() * 10000}`,
+//       payment_capture: 1 // Auto capture payment
+//    };
 
-   const order = await instance.orders.create(options);
-   if (!order) {
-      return res.status(500).json({ success: false, message: "Failed to create payment order" });
-   }
-   return res.status(200).json({
-      success: true,
-      message: "Payment order created successfully",
-      order
-   });
-};
-// get key for payment
-exports.getPaymentKey = (req, res) => {
-  try {
-    const key = process.env.RAZORPAY_PAI_KEY;
-    if (!key) {
-      return res.status(500).json({ success: false, message: "Payment key not found" });
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Payment key retrieved successfully",
-      key
-    });
-  } catch (error) {
-    console.error("Error retrieving payment key:", error.message);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-// verify payment
-exports.verifyPayment = async(req,res)=>{
-     try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-  const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+//    const order = await instance.orders.create(options);
+//    if (!order) {
+//       return res.status(500).json({ success: false, message: "Failed to create payment order" });
+//    }
+//    return res.status(200).json({
+//       success: true,
+//       message: "Payment order created successfully",
+//       order
+//    });
+// };
+// // get key for payment
+// exports.getPaymentKey = (req, res) => {
+//   try {
+//     const key = process.env.RAZORPAY_PAI_KEY;
+//     if (!key) {
+//       return res.status(500).json({ success: false, message: "Payment key not found" });
+//     }
+//     return res.status(200).json({
+//       success: true,
+//       message: "Payment key retrieved successfully",
+//       key
+//     });
+//   } catch (error) {
+//     console.error("Error retrieving payment key:", error.message);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };
+// // verify payment
+// exports.verifyPayment = async(req,res)=>{
+//      try {
+//         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+//   const body = `${razorpay_order_id}|${razorpay_payment_id}`;
 
-  const expectedSignature = crypto 
-    .createHmac('sha256', process.env.RAZORPAY_API_SECRET)
-    .update(body)
-    .digest('hex');
+//   const expectedSignature = crypto 
+//     .createHmac('sha256', process.env.RAZORPAY_API_SECRET)
+//     .update(body)
+//     .digest('hex');
 
-  if (expectedSignature === razorpay_signature) {
-    // Save transaction in DB if needed
-    res.status(200).json({ success: true, message: 'Payment verified' });
-  } else {
-    res.status(400).json({ success: false, message: 'Invalid signature' });
-  }
+//   if (expectedSignature === razorpay_signature) {
+//     // Save transaction in DB if needed
+//     res.status(200).json({ success: true, message: 'Payment verified' });
+//   } else {
+//     res.status(400).json({ success: false, message: 'Invalid signature' });
+//   }
       
-     } catch (error) {
-        res.status(500).json({ success: false, message: "Payment verification failed", error: error.message });
+//      } catch (error) {
+//         res.status(500).json({ success: false, message: "Payment verification failed", error: error.message });
       
-     }
-}
+//      }
+// }
 // product order controllers
 exports.createProductOrder = async (req, res) => {
   try {

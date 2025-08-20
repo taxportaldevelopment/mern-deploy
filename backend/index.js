@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
 const multer = require("multer");
-const Razorpay = require("razorpay");
+// const Razorpay = require("razorpay");
 const sharp = require("sharp"); // for image validation
 
 // Load environment variables
@@ -37,10 +37,10 @@ app.use(
 );
 
 // Razorpay Instance
-exports.instance = new Razorpay({
-  key_id: process.env.RAZORPAY_PAI_KEY,
-  key_secret: process.env.RAZORPAY_API_SECRET,
-});
+// exports.instance = new Razorpay({
+//   key_id: process.env.RAZORPAY_PAI_KEY,
+//   key_secret: process.env.RAZORPAY_API_SECRET,
+// });
 
 // Static file serving
 app.use("/upload", express.static(path.join(__dirname, "upload")));
