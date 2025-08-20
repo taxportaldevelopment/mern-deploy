@@ -58,7 +58,7 @@ function App() {
            <div className='mb-18'>
           <Routes>
              <Route path='/' element={<Home/>} />
-             {/* <Route path='/product/:id' element={<ProductShow/>} /> 
+             <Route path='/product/:id' element={<ProductShow/>} /> 
              <Route path='/add-to-cart' element={<AddToCart/>} />
              <Route path='/register' element={<Register/>} />
              <Route path='/login' element={<Login/>} />
@@ -69,17 +69,17 @@ function App() {
              <Route path='/auth/forgot' element={<PasswordForgot/>} />
              <Route path='/auth/forgot/reset/:token' element={<ForgotTokenPassword/>} />
              <Route path='/auth/order-details/:id' element={<ProductOrderDetails/>} />
-             <Route path='/order-success' element={<PaymentSuccess/>} /> */}
+             <Route path='/order-success' element={<PaymentSuccess/>} />
 
              {/* admin routers */}
-             {/* <Route path='/add-products' element={<AdminRoute><AddNewProduct/></AdminRoute> } />
+             <Route path='/add-products' element={<AdminRoute><AddNewProduct/></AdminRoute> } />
              <Route path='/delete/product' element={<AdminRoute><DeleteProduct/></AdminRoute>} /> 
              <Route path='/admin/order-track' element={<AdminRoute><OrderStatus/></AdminRoute>} />
              <Route path='/admin/productlist' element={<AdminRoute><ProductList/></AdminRoute>} />
              <Route path='/dashboard' element={<AdminRoute><DashBoard/></AdminRoute>} />
             <Route path='/update-product/:id' element={<AdminRoute><ProductUpdate/></AdminRoute>} />
             <Route path='/admin/recover-product' element={<AdminRoute><ProductRecover/></AdminRoute>} />
-            <Route path='/admin/user-orders' element={<AdminRoute><UserOrders/></AdminRoute>} /> */}
+            <Route path='/admin/user-orders' element={<AdminRoute><UserOrders/></AdminRoute>} />
           </Routes>
 
            </div>
