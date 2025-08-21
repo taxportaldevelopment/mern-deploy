@@ -2,7 +2,7 @@
 const ErrorHandler = (err, res) => {
 
       if(process.env.NODE_ENV === "development"){
-            res.status(400).json({
+           return res.status(400).json({
                   success: false,
                   message: err.message,
                   stack: err.stack,
@@ -22,7 +22,7 @@ const ErrorHandler = (err, res) => {
                   const message = Object.values(err.errors).map((value)=>{
                         return value.message
                   })
-                  res.status(400).json({
+                return res.status(400).json({
                         success: false,
                         message: message.toString(),
                   })
