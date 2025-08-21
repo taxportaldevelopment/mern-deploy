@@ -77,7 +77,7 @@ exports.getAllProducts = async(req,res)=>{
         // if(!products){
         //     return res.status(400).json({error:"product not found"})
         // }
-        return res.status(200).json({message:"product found",products})
+        return res.status(200).json({message:"product found"})
     } catch (error) {
           ErrorHandler(error,res);
     }
