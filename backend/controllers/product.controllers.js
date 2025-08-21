@@ -73,11 +73,11 @@ exports.addProducts = async (req, res) => {
 exports.getAllProducts = async(req,res)=>{
     try {
         
-        // const products = await Product.findOne()
-        // if(!products){
-        //     return res.status(400).json({error:"product not found"})
-        // }
-        return res.status(200).json({message:"product found"})
+        const products = await Product.find()
+        if(!products){
+            return res.status(400).json({error:"product not found"})
+        }
+        return res.status(200).json({message:"product found",products})
     } catch (error) {
           ErrorHandler(error,res);
     }
